@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+    Cors: "'*'"
+
+Resources:
+  ExampleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs12.x
+      CodeUri: dist/
+      Events:
+        Handler:
+          Type: Api
+          Properties:
+            Path: /handler
+            Method: get
+            RestApiId:
+              Ref: ExampleAPIGateway
+
+  ExampleAPIGateway:
+    Type: AWS::Serverless::Api
+    DependsOn: ExampleFunction
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          version: "1.0"
+          title: "Lambda Integration Example"
+        basePath: /prod
+        schemes:
+        - "https"
+        paths:
+          /handler:
+            get:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleFunction.Arn}/invocations
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"

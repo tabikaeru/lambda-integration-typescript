@@ -1,0 +1,24 @@
+{
+  "name": "lambda-integration-example",
+  "version": "1.0.0",
+  "description": "Lambda Integration Example for Typescript",
+  "main": "index.ts",
+  "scripts": {
+    "build": "yarn tsc -p ./tsconfig.json && cp ./package.json ./dist/package.json",
+    "deploy": "sam deploy  --template-file template.yml --stack-name lambda-integration-example-add-your-name --s3-bucket lambda-integration-example-add-your-name --region us-east-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND"
+  },
+  "dependencies": {
+    "aws-lambda": "^1.0.6"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.85",
+    "typescript": "^4.4.4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "volta": {
+    "node": "12.22.1",
+    "yarn": "1.22.10"
+  }
+}
